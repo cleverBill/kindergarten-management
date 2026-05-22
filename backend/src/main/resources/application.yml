@@ -8,6 +8,12 @@ spring:
     password: '123456'
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  sql:
+    init:
+      enabled: true
+      mode: always
+      schema-locations: classpath:schema.sql,classpath:fee.sql,classpath:pickup.sql,classpath:class_circle.sql,classpath:private_message.sql,classpath:teacher_performance.sql
+
   jpa:
     hibernate:
       ddl-auto: none
@@ -18,22 +24,14 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
-  # Flyway 数据库迁移配置
+  # Flyway 数据库迁移配置（暂时禁用，因为 MySQL 5.5 不被支持）
   flyway:
-    enabled: true
-    baseline-on-migrate: true
-    baseline-version: 0
-    locations: classpath:db/migration
-    sql-migration-prefix: V
-    sql-migration-separator: __
-    sql-migration-suffixes: .sql
-    validate-on-migrate: true
+    enabled: false
 
 logging:
   level:
     com.example.studentmanagement: INFO
     org.hibernate.SQL: INFO
-    org.flywaydb: DEBUG
 
 file:
   upload-dir: uploads

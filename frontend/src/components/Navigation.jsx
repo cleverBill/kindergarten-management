@@ -5,6 +5,7 @@ const navSections = [
   {
     id: 'students',
     title: '👧 学生管理',
+    icon: '👧',
     items: [
       { id: 'studentList', label: '📋 学生列表' },
       { id: 'addStudent', label: '➕ 添加学生' },
@@ -17,6 +18,7 @@ const navSections = [
   {
     id: 'teachers',
     title: '👨‍🏫 教师管理',
+    icon: '👨‍🏫',
     items: [
       { id: 'users', label: '👥 用户管理' },
       { id: 'performance', label: '📊 绩效统计' }
@@ -25,6 +27,7 @@ const navSections = [
   {
     id: 'operations',
     title: '📋 运营管理',
+    icon: '📋',
     items: [
       { id: 'fee', label: '💰 收费管理' },
       { id: 'pickup', label: '🚸 接送管理' },
@@ -35,6 +38,7 @@ const navSections = [
   {
     id: 'system',
     title: '⚙️ 系统设置',
+    icon: '⚙️',
     items: [
       { id: 'dashboard', label: '📊 数据仪表盘' },
       { id: 'config', label: '🏠 园所配置' }
@@ -56,49 +60,64 @@ export default function Navigation({ activeTab, onTabChange, onLogout }) {
     );
   };
 
-  return (
-    <>
-      <header className="app-header">
-        <div className="app-header-inner">
-          <div className="kindergarten-info">
-            <span className="kindergarten-icon">🏠</span>
-            <span className="kindergarten-name">{kindergarten}</span>
-          </div>
-          <div className="header-right">
-            <span className="current-user">👤 {user.username}</span>
-            <button className="logout-btn" onClick={onLogout}>退出登录</button>
-          </div>
-        </div>
-      </header>
+  const getSectionId = (tabId) => {
+    for (const section of navSections) {
+      if (section.items.some(item => item.id === tabId)) {
+        return section.id;
+      }
+    }
+    return 'students';
+  };
 
-      <div className="main-nav">
-        <div className="nav-grid">
-          {navSections.map(section => (
-            <div key={section.id} className="nav-box">
-              <div 
-                className={`nav-title ${expandedSections.includes(section.id) ? 'active' : ''}`}
-                onClick={() => toggleSection(section.id)}
-              >
-                {section.title}
-                <span className="nav-arrow">{expandedSections.includes(section.id) ? '▼' : '▶'}</span>
-              </div>
-              {expandedSections.includes(section.id) && (
-                <div className="nav-items">
-                  {section.items.map(item => (
-                    <button
-                      key={item.id}
-                      className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
-                      onClick={() => onTabChange(item.id)}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+  const currentSection = getSectionId(activeTab);
+
+  return (
+    <aside className="sidebar">
+      <div className="sidebar-header">
+        <div className="kindergarten-info">
+          <span className="kindergarten-icon">🏠</span>
+          <span className="kindergarten-name">{kindergarten}</span>
         </div>
       </div>
-    </>
+
+      <nav className="sidebar-nav">
+        {navSections.map(section => (
+          <div 
+            key={section.id} 
+            className={`nav-section ${expandedSections.includes(section.id) ? 'expanded' : ''}`}
+          >
+            <button
+              className={`nav-section-header ${currentSection === section.id ? 'active' : ''}`}
+              onClick={() => toggleSection(section.id)}
+            >
+              <span className="nav-icon">{section.icon}</span>
+              <span className="nav-title">{section.title}</span>
+              <span className="nav-arrow">{expandedSections.includes(section.id) ? '▼' : '▶'}</span>
+            </button>
+            {expandedSections.includes(section.id) && (
+              <div className="nav-items">
+                {section.items.map(item => (
+                  <button
+                    key={item.id}
+                    className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+                    onClick={() => onTabChange(item.id)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </nav>
+
+      <div className="sidebar-footer">
+        <div className="user-info">
+          <span className="user-icon">👤</span>
+          <span className="user-name">{user.username}</span>
+        </div>
+        <button className="logout-btn" onClick={onLogout}>退出登录</button>
+      </div>
+    </aside>
   );
 }
